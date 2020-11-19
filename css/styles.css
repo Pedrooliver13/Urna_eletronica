@@ -1,0 +1,6 @@
+@import './base/reset.css';
+@import './base/base.css';
+
+/* components */
+@import './components/urna.css';
+@import './components/button.css';
