@@ -6,5 +6,9 @@ const urna = new Urna(
   "[data-urna='title']",
   "[data-urna='results']",
 );
-urna.addButtons('.btn--green', "[data-urna='corrects']", "[data-urna='clear']");
+urna.addControls(
+  "[data-urna='confirm']",
+  "[data-urna='corrects']",
+  "[data-urna='clear']",
+);
 urna.init();

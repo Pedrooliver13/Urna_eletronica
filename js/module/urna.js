@@ -2,28 +2,38 @@ import { etapas } from './etapas.js';
 
 export class Urna {
   constructor(keyNumber, wrapper, title, results) {
+    // controls
     this.keyNumber = document.querySelectorAll(keyNumber);
     this.wrapper = document.querySelector(wrapper);
     this.title = document.querySelector(title);
     this.resultsWrapper = document.querySelector(results);
 
+    // votos
     this.voted = [];
     this.results = [];
 
-    this.slidePosts = 0;
+    // currentPosition 
+    this.currentStage = 0;
     this.slideDigits = 0;
+  }
 
+  createDigit() {
+    const div = document.createElement('div');
+    div.classList.add('urna__digits');
+    return div;
+  }
+
+  // adiciona numero de digitos para essa currentStage
+  appendHtml() {
+    this.wrapper.innerHTML = '';
     this.totalDigits = etapas.reduce((acc, { numeros }) => {
       return [...acc, numeros];
     }, []);
-  }
 
-  appendHtml() {
-    this.wrapper.innerHTML = '';
-
-    for (let index = 0; index < this.totalDigits[this.slidePosts]; index++) {
+    for (let index = 0; index < this.totalDigits[this.currentStage]; index++) {
       const divElement = this.createDigit();
       this.wrapper.appendChild(divElement);
+      this.activeDigits();
     }
   }
 
@@ -38,10 +48,39 @@ export class Urna {
     this.wrapperArray.forEach((item) => item.classList.remove('active'));
   }
 
-  createDigit() {
-    const div = document.createElement('div');
-    div.classList.add('urna__digits');
-    return div;
+  getValue({ target }) {
+    if (this.wrapperArray[this.slideDigits]) {
+      const content = target.innerText;
+      return this.insertValue(content);
+    }
+  }
+
+  getCandidate() {
+    this.candidates = etapas[this.currentStage].candidatos.reduce(
+      (acc, candidato) => {
+        return [...acc, candidato];
+      },
+      [],
+    );
+  }
+
+  showCandidate() {
+    this.candidato = this.candidates.filter(
+      ({ numero }) => numero === this.voted,
+    );
+    this.results.push(...this.candidato);
+
+
+    const html = this.candidato.map(
+      ({ nome, partido }) => `
+      <div class="urna__candidate">
+        <p>Nome: ${nome}</p>
+        <p>Partido: ${partido}</p>
+      </div>
+    `,
+    );
+
+    this.title.innerHTML += html;
   }
 
   insertValue(content) {
@@ -66,50 +105,15 @@ export class Urna {
     this.activeDigits();
   }
 
-  getCandidate() {
-    this.candidates = etapas[this.slidePosts].candidatos.reduce(
-      (acc, candidato) => {
-        return [...acc, candidato];
-      },
-      [],
-    );
-  }
-
-  showCandidate() {
-    this.candidato = this.candidates.filter(
-      ({ numero }) => numero === this.voted,
-    );
-
-    this.results.push(...this.candidato);
-
-    const html = this.candidato.map(
-      ({ nome, partido }) => `
-      <div class="urna__candidate">
-        <p>Nome: ${nome}</p>
-        <p>Partido: ${partido}</p>
-      </div>
-    `,
-    );
-
-    this.title.innerHTML += html;
-  }
-
-  getValue({ target }) {
-    if (this.wrapperArray[this.slideDigits]) {
-      const content = target.innerText;
-      return this.insertValue(content);
-    }
-  }
-
   nextFase() {
-    if (this.slidePosts <= etapas.length) {
-      this.slidePosts++;
+    if (this.currentStage <= etapas.length) {
+      this.currentStage++;
       this.slideDigits = 0;
     }
 
-    if (this.slidePosts > etapas.length - 1) return this.showResults();
+    if (this.currentStage > etapas.length - 1) return this.showResults();
 
-    this.correctsVote();
+    this.resetVote();
   }
 
   confirmVote() {
@@ -117,11 +121,11 @@ export class Urna {
     if (firstItem.innerText !== '') this.nextFase();
   }
 
-  correctsVote() {
+  resetVote() {
     this.resultsWrapper.innerText = '';
 
-    if (this.slidePosts < etapas.length) {
-      const titleCargo = etapas[this.slidePosts].titulo;
+    if (this.currentStage < etapas.length) {
+      const titleCargo = etapas[this.currentStage].titulo;
       this.title.innerHTML = `<h3>${titleCargo}</h3>`;
       this.slideDigits = 0;
     }
@@ -158,7 +162,7 @@ export class Urna {
     this.wrapper.parentElement.innerHTML = html;
   }
 
-  addButtons(keyConfirm, keyCorrects, keyClear) {
+  addControls(keyConfirm, keyCorrects, keyClear) {
     this.confirmButton = document.querySelector(keyConfirm);
     this.correctsButton = document.querySelector(keyCorrects);
     this.clearButton = document.querySelector(keyClear);
@@ -169,23 +173,22 @@ export class Urna {
       item.addEventListener('click', this.getValue);
     });
     this.confirmButton.addEventListener('click', this.confirmVote);
-    this.correctsButton.addEventListener('click', this.correctsVote);
+    this.correctsButton.addEventListener('click', this.resetVote);
     this.clearButton.addEventListener('click', this.clearVote);
   }
 
   onBind() {
     this.getValue = this.getValue.bind(this);
     this.confirmVote = this.confirmVote.bind(this);
-    this.correctsVote = this.correctsVote.bind(this);
+    this.resetVote = this.resetVote.bind(this);
     this.clearVote = this.clearVote.bind(this);
   }
 
   init() {
     this.onBind();
-    this.appendHtml();
     this.addButtonEvent();
-    this.addButtons();
-    this.activeDigits();
+    this.appendHtml();
+    this.addControls();
 
     return this;
   }
