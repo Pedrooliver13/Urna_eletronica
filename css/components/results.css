@@ -1,0 +1,16 @@
+.results {
+  color: white;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 20px;
+  font-weight: bold;
+  margin: 60px;
+}
+
+.results__candidate {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+
+  color: aqua;
+  margin-top: 20px;
+}

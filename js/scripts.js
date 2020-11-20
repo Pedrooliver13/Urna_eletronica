@@ -1,4 +1,10 @@
-import { UrnaNav } from './module/urna.js';
+import { Urna } from './module/urna.js';
 
-const urna = new UrnaNav('.urna__key', '.urna__screen .urna__column');
+const urna = new Urna(
+  "[data-urna='key']",
+  "[data-urna='voto']",
+  "[data-urna='title']",
+  "[data-urna='results']",
+);
+urna.addButtons('.btn--green', "[data-urna='corrects']", "[data-urna='clear']");
 urna.init();

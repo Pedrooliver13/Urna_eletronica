@@ -11,41 +11,49 @@
   <body>
     <section class="urna">
       <div class="urna__screen">
-        <div class="urna__title">Vereador</div>
-        <div class="urna__column">
+        <div class="urna__title" data-urna="title">
+          <h3>Vereador</h3>
         </div>
-        <div class="urna__results">VOTO NULO</div>
+        <div class="urna__column" data-urna="voto">
+        </div>
+        <div class="urna__results" data-urna="results"></div>
       </div>
 
       <div class="urna__keyboard">
         <div class="urna__column">
-          <div class="urna__key">1</div>
-          <div class="urna__key">2</div>
-          <div class="urna__key">3</div>
+          <div class="urna__key" data-urna="key">1</div>
+          <div class="urna__key" data-urna="key">2</div>
+          <div class="urna__key" data-urna="key">3</div>
         </div>
 
         <div class="urna__column">
-          <div class="urna__key">4</div>
-          <div class="urna__key">5</div>
-          <div class="urna__key">6</div>
+          <div class="urna__key" data-urna="key">4</div>
+          <div class="urna__key" data-urna="key">5</div>
+          <div class="urna__key" data-urna="key">6</div>
         </div>
 
         <div class="urna__column">
-          <div class="urna__key">7</div>
-          <div class="urna__key">8</div>
-          <div class="urna__key">9</div>
+          <div class="urna__key" data-urna="key">7</div>
+          <div class="urna__key" data-urna="key">8</div>
+          <div class="urna__key" data-urna="key">9</div>
         </div>
 
         <div class="urna__column">
-          <div class="urna__key">0</div>
+          <div class="urna__key" data-urna="key">0</div>
         </div>
 
         <div class="urna__dashboard">
-          <button class="btn btn--white">Branco</button>
-          <button class="btn btn--red">Corrige</button>
-          <button class="btn btn--green">Confirma</button>
+          <button class="btn btn--white" data-urna="clear">Branco</button>
+          <button class="btn btn--red" data-urna="corrects">Corrige</button>
+          <button class="btn btn--green" data-urna="confirm">Confirma</button>
         </div>
       </div> 
+    </section>
+
+    <section class="results">
+      Em quem você votou?
+      <div class="results__title">
+      </div>
     </section>
 
     <script type="module" src="./js/scripts.js"></script>
